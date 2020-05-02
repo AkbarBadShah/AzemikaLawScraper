@@ -3,18 +3,18 @@ from const import USER_AGENTS
 from sys import stdout
 from datetime import date, datetime
 import time
-from typing import Tuple, Any
 from bs4 import BeautifulSoup
 import requests
 import logging
 import logging.handlers
 import os
 import random
-
+from lxml import html
 
 class Base:
 
     def __init__(self):
+        self.url = ''
         self.sleep=5
         self.logger = logging.getLogger()
         self.formatter = logging.Formatter(
@@ -23,13 +23,15 @@ class Base:
         self.scraper_type = ""
         self.status = True
         self.debug = False
+        self.log = self.logger.info
 
-    def get_content_simple(self, url: str, default_timeout: int = 10):
+    @staticmethod
+    def get_content_simple(url: str, default_timeout: int = 10):
         user_agent = random.choice(USER_AGENTS)
         data = requests.get(
             url, headers={"User-Agent": user_agent}, timeout=default_timeout
         )
-        time.sleep(random.randrange(1,5))
+        time.sleep(random.randrange(5))
         return data
         # pickle.dump(data, file)
 
@@ -75,6 +77,7 @@ class Base:
                 self.logger.error(f"{error} against {url}")
             else:
                 page = BeautifulSoup(page.text, "html.parser")
+                # page = html.fromstring(page.content)
                 self.status = True
 
         return page
@@ -83,7 +86,8 @@ class Base:
         self.logger.setLevel(logging.INFO)
         if self.logger.hasHandlers():
             self.logger.handlers.clear()
-        file_name = f"{os.path.dirname(os.path.realpath(__file__))}/logs/{self.scraper_type}/{datetime.today()}"
+        # file_name = f"{os.path.dirname(os.path.realpath(__file__))}/logs/{self.scraper_type}/{datetime.today()}"
+        file_name = f"{os.path.dirname(os.path.realpath(__file__))}/logs/{self.scraper_type}/{datetime.now()}"
         handler = logging.handlers.TimedRotatingFileHandler(file_name)
         handler.setFormatter(self.formatter)
         self.logger.addHandler(handler)

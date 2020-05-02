@@ -35,7 +35,7 @@ USER_AGENTS = [
         "Safari/537.36"
     ),  # chrome
 ]
-BaseURL = "https://forum.mobilism.org/viewforum.php?f=399&start="
+BaseURL = "https://azemikalaw.com/"
 # BaseURL = "https://forum.mobilism.org/viewtopic.php?f=399&t=3558945"
 WEB_DRIVER_PATH = "/usr/bin/firefox-dev"
 
